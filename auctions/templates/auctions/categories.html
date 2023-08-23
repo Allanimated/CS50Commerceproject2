@@ -1,0 +1,23 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <div class="text-center container py-5">
+        <div class="row" id="itemcard">
+            {% for category in categories %}
+                <div class="col-md-3">
+                    <div class="card">
+                        {% if category.image %}      
+                            <img class="card-img-top" src="{{ category.image.url }}" alt="{{ category.name }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <a class="nav-link" href="{% url 'auctions:category' category.id %}">
+                                <h5 class="card-title">{{ category.name }}</h5>
+                            </a>
+                        </div>        
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+{% endblock %}

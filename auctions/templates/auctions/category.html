@@ -1,0 +1,29 @@
+{% extends "auctions/layout.html" %}
+{% block body %}
+    <div class="text-center container py-5">
+        <div class="row" id="itemcard">
+            {% for listing in listings %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100" style="border-radius: 15px;">
+                        {% if listing.image %}      
+                            <img class="card-img-top" src="{{ listing.image.url }}" alt="{{ listing.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            {% if user.is_authenticated %}
+                                <a class="nav-link" href="{% url 'auctions:listing' listing.id %}">
+                                    <h5 class="card-title">{{ listing.title }}</h5>
+                                </a>
+                            {%else%}
+                                <a class="nav-link" href="{% url 'auctions:login' %}">
+                                    <h5 class="card-title">{{ listing.title }}</h5>
+                                </a>
+                            {% endif %}
+                            <p class="card-text">{{ listing.description }}</p>
+                            <h6 class="card-subtitle mb-2 text-muted">Price: ${{ listing.price }}</h6>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

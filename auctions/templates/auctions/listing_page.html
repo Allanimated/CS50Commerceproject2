@@ -1,0 +1,147 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if message.tags %} alert-{{message.tags}}{%endif%}" role="alert">
+                    {{ message }}
+                </div>
+            {%endfor%}
+        {% endif %}
+        {% if winner %}
+            {% if is_active == False %}
+                {% if winner == request.user %}
+                <div class="alert alert-success" role="alert">
+                    YOU WON!!!
+                </div>
+                {%endif%}
+            {%endif%}
+        {%endif%}
+    </div>
+    <br>
+    <div class="row">
+        <div class="col">
+            <div class="card mb-3">
+                <div class="row g-0">
+                  <div class="col">
+                    {% if listing.image %}
+                        <img class="img-fluid rounded-start" src="{{ listing.image.url }}" alt="{{ listing.title }}"
+                            style="height: 500px; width: 500px;">
+                    {% endif %}
+                  </div>
+                  <div class="col">
+                    <div class="card-body">
+                      <h5 class="card-title">{{ listing.title }}</h5>
+                      <p class="card-text">{{ listing.description }}</p>
+                      <h6 class="card-subtitle mb-2 text-muted">Price: ${{ listing.price }}</h6>
+                      <p class="card-text">Category: {{ listing.category }}</p>
+                      <p class="card-text">Owned by: <strong>{{ listing.owner }}</strong></p>
+                      <p class="text-muted small mb-0">
+                            Shared publicly - {{listing.date_added}}
+                      </p><br>
+                        {% if user.is_authenticated %}
+                            {% if listing not in items_owned %}
+                                {%if is_active == True %}
+                                    <form method="post" action="{% url 'auctions:place_bid' listing_id=listing.id %}">
+                                        {% csrf_token %}
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <button class="btn btn-outline-warning" type="submit">Bid</button>
+                                            </div>
+                                            <input type="number" min="0" name="bid" placeholder="Place Bid" class="form-control">
+                                        </div>
+                                
+                                    </form>
+                                {%endif%}
+                            {% endif %}
+                        {% endif %}
+                        <br>
+                        {% if user.is_authenticated %}
+                            {% if request.user in listed_by %}
+                                <form method="post" action="{% url 'auctions:watchlist_action' listing_id=listing.id %}">
+                                    {% csrf_token %}
+                                    <input name="watchlist" value="Remove from watchlist" type="submit"
+                                            class="btn btn-outline-danger">
+                                </form>
+                            {% else %}
+                                <form method="post" action="{% url 'auctions:watchlist_action' listing_id=listing.id %}">
+                                    {% csrf_token %}
+                                    <input name="watchlist" value="Add to watchlist" type="submit"
+                                            class="btn btn-outline-success">
+                                </form>
+                            {% endif %}
+                        {% endif %}
+                        <br>
+                        {% if user.is_authenticated %}
+                            {% if listing in items_owned %}
+                                {% if is_active == True %}
+                                    <form method="post" action="{% url 'auctions:toggle_auction' listing_id=listing.id %}">
+                                        {% csrf_token %}
+                                        <input name="close auction" value="Close Auction" type="submit"class="btn btn-outline-info">
+                                    </form>
+                                {% else %}
+                                    <form method="post" action="{% url 'auctions:toggle_auction' listing_id=listing.id %}">
+                                        {% csrf_token %}
+                                        <input name="close auction" value="Open Auction" type="submit" class="btn btn-outline-info">
+                                    </form>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                        <br>
+                        {%if listing.active == True %}
+                            <p style="color: green;"><strong>Active</strong></p>
+                        {%else%}
+                            <p style="color: red;"><strong>Auction Closed</strong></p>
+                        {%endif%}
+                    </div>
+                  </div>
+                </div>
+            </div>
+            
+        </div>
+        <br>
+
+        <div class="col">
+            <div class="card" style="background-color: #e3f2fd;padding-top: 20px; width: 95%;">
+                <div class="card-body p-4">
+                    {%for comment in comments%}
+                        <div class="d-flex flex-start align-items-center">
+                            <div>
+                                <h6 class="fw-bold text-primary mb-1">{{comment.user}}</h6>
+                                <p class="text-muted small mb-0">
+                                    Shared publicly - {{comment.date_added}}
+                                </p>
+                            </div>
+                        </div>
+
+                        <p class="mt-3 mb-4 pb-2">
+                            {{comment.comment}}
+                        </p>
+                    {%endfor%}
+                    
+                    <div class="card-footer py-3 border-0" style="background-color: #f8f9fa;">
+                        {%if user.is_authenticated%}
+                            <form action="{% url 'auctions:comment' listing_id=listing.id %}" method="post">
+                                {% csrf_token %}
+                                <div class="d-flex flex-start w-100">
+                                    <div class="form-outline w-100">
+                                        <input type="text" name="comment" class="form-control" rows="4" style="background: #fff;" required>
+                                        <label class="form-label" for="textAreaExample">comment</label>
+                                    </div>
+                                </div>
+                                <div class="float-end mt-2 pt-1">
+                                    <button type="submit" class="btn btn-primary btn-sm">Post comment</button>
+                                </div>
+                            </form>
+                        {%endif%}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+

@@ -1,0 +1,18 @@
+{% extends "auctions/layout.html" %}
+{% load bootstrap5 %}
+
+{% block body%}
+  <h2>Create New Listing</h2>
+  <div class="form-group">
+    <form action="{% url 'auctions:new' %}" method="post" enctype="multipart/form-data">
+      {% csrf_token%}
+      {% bootstrap_form form %}
+      <br>
+      <input  class="btn btn-primary" type="submit" value="Create" >
+  
+    </form>
+  </div>
+  
+
+
+{%  endblock %}

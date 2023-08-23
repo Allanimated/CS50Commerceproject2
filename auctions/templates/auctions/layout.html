@@ -1,0 +1,71 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}Auctions{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="{% static 'auctions/styles.css' %}" rel="stylesheet">
+    </head>
+    <body>
+        <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{% url 'auctions:index' %}">Auctions</a>
+            </div>
+            <br>
+            <div class="navbar-text" role="presentation" >
+                {% if user.is_authenticated %}
+                    Signed in as <strong>{{ user.username }}</strong>.
+                {% else %}
+                    Not signed in.
+                {% endif %}
+            </div>
+            <hr>
+            <ul class="nav nav-pills nav-fill gap-2 p-1 small" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" href="{% url 'auctions:index' %}">
+                        <button class="btn btn-outline-success"  data-bs-toggle="tab" type="button" role="tab">Active listings</button>
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation" role="presentation">
+                    <a class="nav-link" href="{% url 'auctions:categories' %}">
+                        <button class="btn btn-outline-success"  data-bs-toggle="tab" type="button" role="tab">Categories</button>
+                    </a>
+                </li>
+                {% if user.is_authenticated %}
+                    
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" href="{%url 'auctions:new' %}">
+                            <button class="btn btn-outline-success"  data-bs-toggle="tab" type="button" role="tab">Create</button>
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation" role="presentation">
+                        <a class="nav-link" href="{% url 'auctions:watchlist' %}">
+                            <button class="btn btn-outline-success"  data-bs-toggle="tab" type="button" role="tab">Watchlist</button>
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation" role="presentation">
+                        <a class="nav-link" href="{% url 'auctions:logout' %}">
+                            <button class="btn btn-outline-success"  data-bs-toggle="tab" type="button" role="tab">Logout</button>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" href="{% url 'auctions:login' %}">
+                            <button class="btn btn-outline-success"  data-bs-toggle="tab" type="button" role="tab">login</button>
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" href="{% url 'auctions:register' %}">
+                            <button class="btn btn-outline-success"  data-bs-toggle="tab" type="button" role="tab">register</button>
+                        </a>
+                    </li>
+                    
+                {% endif %}
+            </ul>
+            <hr>
+        </nav>
+        {% block body %}
+        {% endblock %}
+    </body>
+</html>
